@@ -9,9 +9,9 @@ const ItemCtrl = (function() {
 
   const data = {
     items: [
-      { id: 0, name: "Salad", calorie: "350" },
-      { id: 1, name: "Sandwich", calorie: "700" },
-      { id: 2, name: "Eggs", calorie: "800" }
+      // { id: 0, name: "Salad", calorie: "350" },
+      // { id: 1, name: "Sandwich", calorie: "700" },
+      // { id: 2, name: "Eggs", calorie: "800" }
     ],
     currentItem: null,
     total: 0
@@ -41,7 +41,7 @@ const ItemCtrl = (function() {
 
 const UICtrl = (function() {
   const UISelector = {
-    itemList: "item-list",
+    itemList: "#item-list",
     addBtn: ".add-btn",
     inputName: "#item-name",
     inputCalorie: "#item-calories"
@@ -61,7 +61,7 @@ const UICtrl = (function() {
               </li>`;
       });
 
-      document.getElementById(UISelector.itemList).innerHTML = html;
+      document.querySelector(UISelector.itemList).innerHTML = html;
     },
     getItemInputs: function() {
       return {
@@ -69,9 +69,30 @@ const UICtrl = (function() {
         calorie: document.querySelector(UISelector.inputCalorie).value
       };
     },
-    clearItemInputs(){
-        document.querySelector(UISelector.inputName).value = "";
-        document.querySelector(UISelector.inputCalorie).value = "";
+    clearItemInputs() {
+      document.querySelector(UISelector.inputName).value = "";
+      document.querySelector(UISelector.inputCalorie).value = "";
+    },
+    addNewListItem(item) {
+      document.querySelector(UISelector.itemList).style.display = "block";
+      const li = document.createElement("li");
+      li.className = "collection-item";
+      li.id = `item-${item.id}`;
+
+      li.innerHTML = `<strong>${item.name}: </strong> <em>${
+        item.calorie
+      } Calories</em>
+              <a href="#" class="secondary-content">
+                <i class="edit-item fa fa-pencil"></i>
+              </a>`;
+
+      console.log(document.querySelector(UISelector.itemList));
+      document
+        .querySelector(UISelector.itemList)
+        .insertAdjacentElement("beforeend", li);
+    },
+    hideList() {
+      document.querySelector(UISelector.itemList).style.display = "none";
     },
     getSelector: function() {
       return UISelector;
@@ -92,11 +113,12 @@ const App = (function(ItemCtrl, UICtrl) {
     const inputs = UICtrl.getItemInputs();
 
     if (inputs.name !== "" && inputs.calorie !== "") {
-      ItemCtrl.addItem(inputs.name, inputs.calorie);
-    }
+      const item = ItemCtrl.addItem(inputs.name, inputs.calorie);
 
-    console.log(ItemCtrl.getItems());
-    UICtrl.clearItemInputs();
+      console.log(ItemCtrl.getItems());
+      UICtrl.clearItemInputs();
+      UICtrl.addNewListItem(item);
+    }
 
     e.preventDefault();
   }
@@ -104,7 +126,12 @@ const App = (function(ItemCtrl, UICtrl) {
   return {
     init: function() {
       const items = ItemCtrl.getItems();
-      UICtrl.populateItems(items);
+
+      if (ItemCtrl.getItems().length == 0) {
+        UICtrl.hideList();
+      } else {
+        UICtrl.populateItems(items);
+      }
 
       loadEvents();
     }
