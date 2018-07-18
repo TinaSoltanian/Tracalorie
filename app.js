@@ -33,6 +33,18 @@ const ItemCtrl = (function() {
       data.items.push(newItem);
       return newItem;
     },
+    updateItem(name, calorie) {
+      data.items.forEach(item=>{
+        if (item.id === data.currentItem.id){
+          let updatedItem = item;
+
+          item.name = name;
+          item.calorie =calorie;          
+        }
+      })
+
+      return updatedItem;
+    },    
     getCurrentItem(){
       return data.currentItem;
     },
@@ -138,6 +150,18 @@ const UICtrl = (function() {
         .querySelector(UISelector.itemList)
         .insertAdjacentElement("beforeend", li);
     },
+    updateItemList(item){
+      const edited = document.getElementById(`item-`+item.id);
+
+      if (edited!=null){
+        edited.innerHTML = `<strong>${item.name}: </strong> <em>${
+          item.calorie
+        } Calories</em>
+                <a href="#" class="secondary-content">
+                  <i class="edit-item fa fa-pencil"></i>
+                </a>`
+      }
+    },
     updateTotalCalories(calories) {
       document.querySelector(UISelector.totalCalories).textContent = calories;
     },
@@ -161,6 +185,10 @@ const App = (function(ItemCtrl, UICtrl) {
     document
       .querySelector(uiSelector.addBtn)
       .addEventListener("click", addItemClick);
+
+      document
+      .querySelector(uiSelector.updateBtn)
+      .addEventListener("click", updateItemClick);      
   };
 
   function editCurrentItem(e) {
@@ -175,6 +203,24 @@ const App = (function(ItemCtrl, UICtrl) {
       ItemCtrl.setCurrentItem(item);
       UICtrl.updateFormWithCurrentItem();
       UICtrl.showInputState();
+    }
+
+    e.preventDefault();
+  }
+
+  function updateItemClick(e){
+
+    const inputs = UICtrl.getItemInputs();
+
+    if (inputs.name !== "" && inputs.calorie !== "") {
+      const item = ItemCtrl.updateItem(inputs.name, inputs.calorie);
+
+
+      UICtrl.clearItemInputs();
+      UICtrl.updateItemList(item);
+
+      const totalCalories = ItemCtrl.getTotalCalories();
+      UICtrl.updateTotalCalories(totalCalories);      
     }
 
     e.preventDefault();
