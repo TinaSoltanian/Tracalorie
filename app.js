@@ -34,9 +34,10 @@ const ItemCtrl = (function() {
       return newItem;
     },
     updateItem(name, calorie) {
+      let updatedItem = null;
       data.items.forEach(item=>{
         if (item.id === data.currentItem.id){
-          let updatedItem = item;
+           updatedItem = item;
 
           item.name = name;
           item.calorie =calorie;          
@@ -188,7 +189,7 @@ const App = (function(ItemCtrl, UICtrl) {
 
       document
       .querySelector(uiSelector.updateBtn)
-      .addEventListener("click", updateItemClick);      
+      .addEventListener("click", updateCurrentItemClick);      
   };
 
   function editCurrentItem(e) {
@@ -208,9 +209,9 @@ const App = (function(ItemCtrl, UICtrl) {
     e.preventDefault();
   }
 
-  function updateItemClick(e){
+  function updateCurrentItemClick(e){
 
-    const inputs = UICtrl.getItemInputs();
+    const inputs = UICtrl.getItemInputs();    
 
     if (inputs.name !== "" && inputs.calorie !== "") {
       const item = ItemCtrl.updateItem(inputs.name, inputs.calorie);
