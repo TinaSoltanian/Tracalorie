@@ -188,8 +188,12 @@ const App = (function(ItemCtrl, UICtrl) {
       .addEventListener("click", addItemClick);
 
       document
+      .querySelector(uiSelector.backBtn)
+      .addEventListener("click", backBtnClick);      
+
+      document
       .querySelector(uiSelector.updateBtn)
-      .addEventListener("click", updateCurrentItemClick);      
+      .addEventListener("click", updateCurrentItemClick);           
   };
 
   function editCurrentItem(e) {
@@ -205,6 +209,13 @@ const App = (function(ItemCtrl, UICtrl) {
       UICtrl.updateFormWithCurrentItem();
       UICtrl.showInputState();
     }
+
+    e.preventDefault();
+  }
+
+  function backBtnClick(e){
+
+    UICtrl.clearInputState();
 
     e.preventDefault();
   }
