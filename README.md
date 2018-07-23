@@ -14,4 +14,4 @@ blueprint of Module pattern in ES6
 
 Using localStorage to store the page state.
 
-To see the preview click here https://jsfiddle.net/tinasoltanian/hn7xcgk9/2/embedded/result/
+To see the preview click here https://jsfiddle.net/tinasoltanian/hn7xcgk9/5/embedded/result
