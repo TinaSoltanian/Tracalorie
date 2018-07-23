@@ -1,5 +1,13 @@
 const StorageCtrl = (function() {
   return {
+    getAllItems: function(){
+      let items = [];
+      if (localStorage.getItem('items') !== null) {
+        items = JSON.parse(localStorage.getItem("items"));
+      }
+
+      return items;
+    },
     storeItem: function(item) {
       let items = [];
 
@@ -29,14 +37,19 @@ const StorageCtrl = (function() {
       if (localStorage.getItem("items") !== null) {
         items = JSON.parse(localStorage.getItem("items"));        
 
-        items.splice(item,1);
+        const index = items.findIndex(obj => obj.id == item.id);
+        items.splice(index,1);
         localStorage.setItem("items", JSON.stringify(items));
       }
+    },
+
+    clearAll(){
+      localStorage.removeItem('items');
     }
   };
 })();
 
-const ItemCtrl = (function() {
+const ItemCtrl = (function(StorageCtrl) {
   const item = function(id, name, calorie) {
     this.id = id;
     this.name = name;
@@ -55,6 +68,8 @@ const ItemCtrl = (function() {
 
   return {
     getItems: function() {
+
+      data.items = StorageCtrl.getAllItems();
       return data.items;
     },
     addItem(name, calorie) {
@@ -127,7 +142,7 @@ const ItemCtrl = (function() {
       return data;
     }
   };
-})();
+})(StorageCtrl);
 
 const UICtrl = (function() {
   const UISelector = {
@@ -290,7 +305,7 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
     UICtrl.clearInputState();
     ItemCtrl.clearAllItems();
     UICtrl.clearAllItems();
-
+    StorageCtrl.clearAll();
     e.preventDefault();
   };
   const deleteBtnClick = function(e) {
@@ -355,7 +370,7 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
 
       const items = ItemCtrl.getItems();
 
-      if (ItemCtrl.getItems().length == 0) {
+      if (items.length == 0) {
         UICtrl.hideList();
       } else {
         UICtrl.populateItems(items);
